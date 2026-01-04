@@ -92,8 +92,9 @@ public class JournalService implements IJournalService {
             JournalEntry journalEntry = journalRepository.findById(id).orElse(null);
             if (journalEntry != null) {
                 journalRepository.deleteById(id);
+            } else {
+                throw new ResourceNotFoundException("Journal Entry with id " + id + " was not found");
             }
-            throw new ResourceNotFoundException("Journal Entry with id " + id + " was not found");
         } catch (ResourceNotFoundException e) {
             throw e;
         } catch (Exception e) {
