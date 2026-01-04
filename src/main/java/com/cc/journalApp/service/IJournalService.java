@@ -11,5 +11,5 @@ public interface IJournalService {
     JournalEntry getJournalEntryById(Long id) throws Exception;
     JournalEntry saveJournalEntry(String userName, JournalRequest journalRequest) throws Exception;
     JournalEntry updateJournalEntry(JournalEntry journalEntry) throws Exception;
-    JournalEntry deleteJournalEntryById(Long id);
+    void deleteJournalEntryById(Long id);
 }

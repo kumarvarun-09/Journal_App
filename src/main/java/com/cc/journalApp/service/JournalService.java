@@ -87,12 +87,11 @@ public class JournalService implements IJournalService {
     }
 
     @Override
-    public JournalEntry deleteJournalEntryById(Long id) {
+    public void deleteJournalEntryById(Long id) {
         try {
             JournalEntry journalEntry = journalRepository.findById(id).orElse(null);
             if (journalEntry != null) {
                 journalRepository.deleteById(id);
-                return journalEntry;
             }
             throw new ResourceNotFoundException("Journal Entry with id " + id + " was not found");
         } catch (ResourceNotFoundException e) {

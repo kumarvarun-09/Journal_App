@@ -78,8 +78,8 @@ public class JournalEntryController {
     @DeleteMapping("/byId/{id}")
     public ResponseEntity<?> deleteJournalById(@PathVariable Long id) {
         try {
-            JournalDTO journalEntry = new JournalDTO(journalService.deleteJournalEntryById(id));
-            return new ResponseEntity<>(journalEntry, HttpStatus.OK);
+            journalService.deleteJournalEntryById(id);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (ResourceNotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         } catch (Exception e) {
