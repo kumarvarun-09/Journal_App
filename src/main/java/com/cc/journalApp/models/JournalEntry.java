@@ -1,5 +1,6 @@
 package com.cc.journalApp.models;
 
+import com.cc.journalApp.request.JournalRequest;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -17,8 +18,14 @@ public class JournalEntry {
     private long id;
     @NonNull
     private String title;
+    @Column(columnDefinition = "TEXT")
     private String content;
     private LocalDateTime timestamp;
     @ManyToOne(fetch = FetchType.LAZY)
-    private Users user;
+    private User user;
+
+    public JournalEntry(JournalRequest journalRequest) {
+        this.title = journalRequest.getTitle();
+        this.content = journalRequest.getContent();
+    }
 }

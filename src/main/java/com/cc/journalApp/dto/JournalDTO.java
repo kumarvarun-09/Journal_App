@@ -12,11 +12,14 @@ public class JournalDTO {
     private String content;
     private LocalDateTime timestamp;
     private Long userId;
+
     public JournalDTO(JournalEntry journalEntry) {
         this.id = journalEntry.getId();
         this.title = journalEntry.getTitle();
         this.content = journalEntry.getContent();
         this.timestamp = journalEntry.getTimestamp();
-        this.userId = journalEntry.getUser().getId();
+        if (journalEntry.getUser() != null) {
+            this.userId = journalEntry.getUser().getId();
+        }
     }
 }

@@ -1,7 +1,10 @@
 package com.cc.journalApp.repository;
 
-import com.cc.journalApp.models.Users;
+import com.cc.journalApp.models.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface UserRepository extends JpaRepository<Users, Long> {
+import java.util.Optional;
+
+public interface UserRepository extends JpaRepository<User, Long> {
+    User findByUserName(String userName);
 }
