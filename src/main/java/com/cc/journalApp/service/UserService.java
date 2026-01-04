@@ -15,7 +15,11 @@ public class UserService implements IUserService {
 
     @Override
     public List<User> getAllUsers() {
-        return userRepository.findAll();
+        try {
+            return userRepository.findAll();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -26,19 +30,23 @@ public class UserService implements IUserService {
                 return user;
             }
             throw new ResourceNotFoundException("User with id: " + id + " not found");
+        } catch (ResourceNotFoundException e) {
+            throw e;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
     @Override
-    public User getUserByName(String userName) {
+    public User getUserByUserName(String userName) throws Exception{
         try {
             User user = userRepository.findByUserName(userName);
             if (user != null) {
                 return user;
             }
-            throw new ResourceNotFoundException("User with name: " + userName + " not found");
+            throw new ResourceNotFoundException("User with username: " + userName + " not found");
+        } catch (ResourceNotFoundException e) {
+            throw e;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -46,16 +54,18 @@ public class UserService implements IUserService {
 
     @Override
     public User createUser(User user) {
-        return null;
+        return userRepository.save(user);
     }
 
     @Override
     public User updateUser(User user) {
-        return null;
+        return userRepository.save(user);
     }
 
     @Override
     public User deleteUser(Long id) {
-        return null;
+        User u = userRepository.findById(id).orElse(null);
+        userRepository.deleteById(id);
+        return u;
     }
 }

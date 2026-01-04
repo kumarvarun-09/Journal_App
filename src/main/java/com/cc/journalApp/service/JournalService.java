@@ -2,7 +2,9 @@ package com.cc.journalApp.service;
 
 import com.cc.journalApp.exceptions.ResourceNotFoundException;
 import com.cc.journalApp.models.JournalEntry;
+import com.cc.journalApp.models.User;
 import com.cc.journalApp.repository.JournalRepository;
+import com.cc.journalApp.request.JournalRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -14,11 +16,16 @@ import java.util.List;
 public class JournalService implements IJournalService {
 
     private final JournalRepository journalRepository;
+    private final IUserService userService;
 
     @Override
-    public List<JournalEntry> getAllJournals() throws Exception {
+    public List<JournalEntry> getAllJournalsForUser(String userName) throws Exception {
         try {
-            return journalRepository.findAll();
+            userName = userName.trim();
+            User user = userService.getUserByUserName(userName);
+            return journalRepository.findByUserId(user.getId());
+        } catch (ResourceNotFoundException e) {
+            throw e;
         } catch (Exception e) {
             throw e;
         }
@@ -40,10 +47,15 @@ public class JournalService implements IJournalService {
     }
 
     @Override
-    public JournalEntry saveJournalEntry(JournalEntry journalEntry) throws Exception {
+    public JournalEntry saveJournalEntry(String userName, JournalRequest journalRequest) throws Exception {
         try {
+            User user = userService.getUserByUserName(userName);
+            JournalEntry journalEntry = new JournalEntry(journalRequest);
+            journalEntry.setUser(user);
             journalEntry.setTimestamp(LocalDateTime.now());
             return journalRepository.save(journalEntry);
+        } catch (ResourceNotFoundException e) {
+            throw e;
         } catch (Exception e) {
             throw e;
         }
@@ -58,10 +70,10 @@ public class JournalService implements IJournalService {
                 String title = requestBody.getTitle();
                 String content = requestBody.getContent();
                 if (title != null && !title.isEmpty()) {
-                    journalEntry.setTitle(title);
+                    journalEntry.setTitle(title.trim());
                 }
                 if (content != null && !content.isEmpty()) {
-                    journalEntry.setContent(content);
+                    journalEntry.setContent(content.trim());
                 }
                 journalEntry.setTimestamp(LocalDateTime.now());
                 return journalRepository.save(journalEntry);

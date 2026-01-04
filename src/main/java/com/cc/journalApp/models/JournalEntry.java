@@ -25,7 +25,11 @@ public class JournalEntry {
     private User user;
 
     public JournalEntry(JournalRequest journalRequest) {
-        this.title = journalRequest.getTitle();
-        this.content = journalRequest.getContent();
+        if (journalRequest.getTitle() != null) {
+            this.title = journalRequest.getTitle().trim();
+        }
+        if (journalRequest.getContent() != null) {
+            this.content = journalRequest.getContent().trim();
+        }
     }
 }

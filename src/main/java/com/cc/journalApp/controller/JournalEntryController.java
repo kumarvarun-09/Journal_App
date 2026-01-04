@@ -19,20 +19,22 @@ import java.util.List;
 public class JournalEntryController {
     private final IJournalService journalService;
 
-    @GetMapping("/all")
-    public ResponseEntity<?> getAllJournalsOfUser() {
+    @GetMapping("/{userName}")
+    public ResponseEntity<?> getAllJournalsOfUser(@PathVariable String userName) {
         try {
             List<JournalDTO> journalEntries = new ArrayList<>();
-            journalService.getAllJournals()
+            journalService.getAllJournalsForUser(userName)
                     .forEach(journal -> {
                         journalEntries.add(new JournalDTO(journal));
                     });
             if (!journalEntries.isEmpty()) {
                 return new ResponseEntity<>(journalEntries, HttpStatus.OK);
             }
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(journalEntries, HttpStatus.OK);
+        } catch (ResourceNotFoundException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -52,7 +54,7 @@ public class JournalEntryController {
     public ResponseEntity<?> addJournalEntry(@PathVariable String userName, @RequestBody JournalRequest journalEntry) {
         try {
             JournalDTO insertedEntry = new JournalDTO(
-                    journalService.saveJournalEntry(new JournalEntry(journalEntry)));
+                    journalService.saveJournalEntry(userName, journalEntry));
             return new ResponseEntity<>(insertedEntry, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
