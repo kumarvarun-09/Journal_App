@@ -1,15 +1,18 @@
 package com.cc.journalApp.service;
 
+import com.cc.journalApp.dto.JournalDTO;
 import com.cc.journalApp.exceptions.ResourceNotFoundException;
 import com.cc.journalApp.models.JournalEntry;
 import com.cc.journalApp.models.User;
 import com.cc.journalApp.repository.JournalRepository;
 import com.cc.journalApp.request.JournalRequest;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.logging.Logger;
 
 @Service
 @RequiredArgsConstructor
@@ -47,6 +50,7 @@ public class JournalService implements IJournalService {
     }
 
     @Override
+    @Transactional
     public JournalEntry saveJournalEntry(String userName, JournalRequest journalRequest) throws Exception {
         try {
             User user = userService.getUserByUserName(userName);
@@ -56,12 +60,13 @@ public class JournalService implements IJournalService {
             return journalRepository.save(journalEntry);
         } catch (ResourceNotFoundException e) {
             throw e;
-        } catch (Exception e) {
+        } catch (RuntimeException e) {
             throw e;
         }
     }
 
     @Override
+    @Transactional
     public JournalEntry updateJournalEntry(JournalEntry requestBody) throws Exception {
         try {
             Long id = requestBody.getId();
@@ -81,12 +86,13 @@ public class JournalService implements IJournalService {
             throw new ResourceNotFoundException("Journal Entry with id " + id + " was not found");
         } catch (ResourceNotFoundException e) {
             throw e;
-        } catch (Exception e) {
+        } catch (RuntimeException e) {
             throw e;
         }
     }
 
     @Override
+    @Transactional
     public void deleteJournalEntryById(Long id) {
         try {
             JournalEntry journalEntry = journalRepository.findById(id).orElse(null);
@@ -97,7 +103,7 @@ public class JournalService implements IJournalService {
             }
         } catch (ResourceNotFoundException e) {
             throw e;
-        } catch (Exception e) {
+        } catch (RuntimeException e) {
             throw e;
         }
     }

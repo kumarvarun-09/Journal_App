@@ -3,6 +3,7 @@ package com.cc.journalApp.service;
 import com.cc.journalApp.exceptions.ResourceNotFoundException;
 import com.cc.journalApp.models.User;
 import com.cc.journalApp.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -53,16 +54,19 @@ public class UserService implements IUserService {
     }
 
     @Override
+    @Transactional
     public User createUser(User user) {
         return userRepository.save(user);
     }
 
     @Override
+    @Transactional
     public User updateUser(User user) {
         return userRepository.save(user);
     }
 
     @Override
+    @Transactional
     public User deleteUser(Long id) {
         User u = userRepository.findById(id).orElse(null);
         userRepository.deleteById(id);
