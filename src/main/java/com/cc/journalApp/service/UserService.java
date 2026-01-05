@@ -1,8 +1,11 @@
 package com.cc.journalApp.service;
 
 import com.cc.journalApp.exceptions.ResourceNotFoundException;
+import com.cc.journalApp.exceptions.UserNameAlreadyInUseException;
+import com.cc.journalApp.exceptions.UserNotFoundException;
 import com.cc.journalApp.models.User;
 import com.cc.journalApp.repository.UserRepository;
+import com.cc.journalApp.request.UserRequest;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -39,13 +42,13 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public User getUserByUserName(String userName) throws Exception{
+    public User getUserByUserName(String userName) throws Exception {
         try {
             User user = userRepository.findByUserName(userName);
             if (user != null) {
                 return user;
             }
-            throw new ResourceNotFoundException("User with username: " + userName + " not found");
+            throw new UserNotFoundException(userName);
         } catch (ResourceNotFoundException e) {
             throw e;
         } catch (Exception e) {
@@ -55,14 +58,50 @@ public class UserService implements IUserService {
 
     @Override
     @Transactional
-    public User createUser(User user) {
-        return userRepository.save(user);
+    public User createUser(UserRequest request) {
+        try {
+            if (request.getUserName() == null || request.getUserName().isEmpty()) {
+                throw new IllegalArgumentException("Parameter userName can not be empty");
+            } else if (request.getPassword() == null || request.getPassword().isEmpty()) {
+                throw new IllegalArgumentException("Parameter password can not be empty");
+            }
+            User user = userRepository.findByUserName(request.getUserName());
+            if (user != null) {
+                throw new UserNameAlreadyInUseException(user.getUserName());
+            }
+            return userRepository.save(new User(request));
+        } catch (IllegalArgumentException e) {
+            throw e;
+        } catch (UserNameAlreadyInUseException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     @Transactional
-    public User updateUser(User user) {
-        return userRepository.save(user);
+    public User updateUser(UserRequest request) {
+        try {
+            if (request.getUserName() == null || request.getUserName().isEmpty()) {
+                throw new IllegalArgumentException("Parameter userName can not be empty");
+            } else if (request.getPassword() == null || request.getPassword().isEmpty()) {
+                throw new IllegalArgumentException("Parameter password can not be empty");
+            }
+            User user = userRepository.findByUserName(request.getUserName());
+            if (user == null) {
+                throw new UserNotFoundException(request.getUserName());
+            }
+            user.setUserName(request.getUserName());
+            user.setPassword(request.getPassword());
+            return userRepository.save(user);
+        } catch (IllegalArgumentException e) {
+            throw e;
+        } catch (UserNotFoundException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override

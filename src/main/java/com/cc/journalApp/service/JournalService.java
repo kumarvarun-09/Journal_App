@@ -1,6 +1,5 @@
 package com.cc.journalApp.service;
 
-import com.cc.journalApp.dto.JournalDTO;
 import com.cc.journalApp.exceptions.ResourceNotFoundException;
 import com.cc.journalApp.models.JournalEntry;
 import com.cc.journalApp.models.User;
@@ -12,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.logging.Logger;
 
 @Service
 @RequiredArgsConstructor
@@ -30,7 +28,7 @@ public class JournalService implements IJournalService {
         } catch (ResourceNotFoundException e) {
             throw e;
         } catch (Exception e) {
-            throw e;
+            throw new RuntimeException(e);
         }
     }
 
@@ -45,7 +43,7 @@ public class JournalService implements IJournalService {
         } catch (ResourceNotFoundException e) {
             throw e;
         } catch (Exception e) {
-            throw e;
+            throw new RuntimeException(e);
         }
     }
 
@@ -60,8 +58,8 @@ public class JournalService implements IJournalService {
             return journalRepository.save(journalEntry);
         } catch (ResourceNotFoundException e) {
             throw e;
-        } catch (RuntimeException e) {
-            throw e;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -86,8 +84,8 @@ public class JournalService implements IJournalService {
             throw new ResourceNotFoundException("Journal Entry with id " + id + " was not found");
         } catch (ResourceNotFoundException e) {
             throw e;
-        } catch (RuntimeException e) {
-            throw e;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -103,8 +101,8 @@ public class JournalService implements IJournalService {
             }
         } catch (ResourceNotFoundException e) {
             throw e;
-        } catch (RuntimeException e) {
-            throw e;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 }

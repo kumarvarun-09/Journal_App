@@ -27,9 +27,6 @@ public class JournalEntryController {
                     .forEach(journal -> {
                         journalEntries.add(new JournalDTO(journal));
                     });
-            if (!journalEntries.isEmpty()) {
-                return new ResponseEntity<>(journalEntries, HttpStatus.OK);
-            }
             return new ResponseEntity<>(journalEntries, HttpStatus.OK);
         } catch (ResourceNotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);

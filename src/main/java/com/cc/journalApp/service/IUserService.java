@@ -1,6 +1,7 @@
 package com.cc.journalApp.service;
 
 import com.cc.journalApp.models.User;
+import com.cc.journalApp.request.UserRequest;
 
 import java.util.List;
 
@@ -11,9 +12,9 @@ public interface IUserService {
 
     User getUserByUserName(String userName) throws Exception;
 
-    User createUser(User user);
+    User createUser(UserRequest user);
 
-    User updateUser(User user);
+    User updateUser(UserRequest user);
 
     User deleteUser(Long id);
 

@@ -1,5 +1,6 @@
 package com.cc.journalApp.models;
 
+import com.cc.journalApp.request.UserRequest;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -22,4 +23,9 @@ public class User {
     private String password;
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<JournalEntry> journalEntries;
+
+    public User(UserRequest request){
+        this.userName = request.getUserName().trim();
+        this.password = request.getPassword().trim();
+    }
 }
