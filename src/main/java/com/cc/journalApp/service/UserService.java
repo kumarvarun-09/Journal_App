@@ -8,6 +8,7 @@ import com.cc.journalApp.repository.UserRepository;
 import com.cc.journalApp.request.UserRequest;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,8 +17,10 @@ import java.util.List;
 @Service
 public class UserService implements IUserService {
     private final UserRepository userRepository;
+    private final PasswordEncoder bCryptPasswordEncoder;
 
     @Override
+
     public List<User> getAllUsers() {
         try {
             return userRepository.findAll();
@@ -69,7 +72,10 @@ public class UserService implements IUserService {
             if (user != null) {
                 throw new UserNameAlreadyInUseException(user.getUserName());
             }
-            return userRepository.save(new User(request));
+            User userToSave = new User(request);
+            userToSave.setPassword(bCryptPasswordEncoder.encode(request.getPassword()));
+            userToSave.setRoles(List.of("USER"));
+            return userRepository.save(userToSave);
         } catch (IllegalArgumentException e) {
             throw e;
         } catch (UserNameAlreadyInUseException e) {

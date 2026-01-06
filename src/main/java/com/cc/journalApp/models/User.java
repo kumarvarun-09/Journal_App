@@ -4,6 +4,7 @@ import com.cc.journalApp.request.UserRequest;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -23,6 +24,8 @@ public class User {
     private String password;
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<JournalEntry> journalEntries;
+
+    private List<String> roles = new ArrayList<>();
 
     public User(UserRequest request){
         this.userName = request.getUserName().trim();
