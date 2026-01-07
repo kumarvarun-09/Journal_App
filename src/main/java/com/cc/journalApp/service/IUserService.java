@@ -16,6 +16,6 @@ public interface IUserService {
 
     User updateUser(UserRequest user);
 
-    User deleteUser(Long id);
+    void deleteUser();
 
 }

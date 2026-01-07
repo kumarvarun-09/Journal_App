@@ -8,6 +8,7 @@ import com.cc.journalApp.repository.UserRepository;
 import com.cc.journalApp.request.UserRequest;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -94,16 +95,18 @@ public class UserService implements IUserService {
             } else if (request.getPassword() == null || request.getPassword().isEmpty()) {
                 throw new IllegalArgumentException("Parameter password can not be empty");
             }
-            User user = userRepository.findByUserName(request.getUserName());
-            if (user == null) {
-                throw new UserNotFoundException(request.getUserName());
+            if (userRepository.findByUserName(request.getUserName()) != null) {
+                throw new UserNameAlreadyInUseException(request.getUserName());
             }
+            String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+            User user = userRepository.findByUserName(userName);
+
             user.setUserName(request.getUserName());
-            user.setPassword(request.getPassword());
+            user.setPassword(bCryptPasswordEncoder.encode(request.getPassword()));
             return userRepository.save(user);
         } catch (IllegalArgumentException e) {
             throw e;
-        } catch (UserNotFoundException e) {
+        } catch (UserNameAlreadyInUseException e) {
             throw e;
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -112,9 +115,8 @@ public class UserService implements IUserService {
 
     @Override
     @Transactional
-    public User deleteUser(Long id) {
-        User u = userRepository.findById(id).orElse(null);
-        userRepository.deleteById(id);
-        return u;
+    public void deleteUser() {
+        String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+        userRepository.deleteByUserName(userName);
     }
 }

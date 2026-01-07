@@ -1,7 +1,6 @@
 package com.cc.journalApp.controller;
 
 import com.cc.journalApp.dto.UserDTO;
-import com.cc.journalApp.exceptions.UserNameAlreadyInUseException;
 import com.cc.journalApp.exceptions.UserNotFoundException;
 import com.cc.journalApp.request.UserRequest;
 import com.cc.journalApp.service.IUserService;
@@ -31,20 +30,6 @@ public class UserController {
         }
     }
 
-    @PostMapping
-    public ResponseEntity<?> addUser(@RequestBody UserRequest request) {
-        try {
-            UserDTO user = new UserDTO(userService.createUser(request));
-            return new ResponseEntity<>(user, HttpStatus.CREATED);
-        } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
-        } catch (UserNameAlreadyInUseException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
-        } catch (Exception e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
     @PutMapping
     public ResponseEntity<?> updateUser(@RequestBody UserRequest request) {
         try {
@@ -54,6 +39,16 @@ public class UserController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
         } catch (UserNotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @DeleteMapping
+    public ResponseEntity<?> deleteUser() {
+        try {
+            userService.deleteUser();
+            return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
