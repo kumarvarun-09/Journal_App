@@ -7,14 +7,14 @@ import java.time.LocalDateTime;
 
 @Data
 public class JournalDTO {
-    private long id;
+    private long journalNumber;
     private String title;
     private String content;
     private LocalDateTime timestamp;
     private Long userId;
 
     public JournalDTO(JournalEntry journalEntry) {
-        this.id = journalEntry.getId();
+        this.journalNumber = journalEntry.getJournalNumber();
         this.title = journalEntry.getTitle();
         this.content = journalEntry.getContent();
         this.timestamp = journalEntry.getTimestamp();

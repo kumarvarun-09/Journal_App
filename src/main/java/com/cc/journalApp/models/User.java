@@ -27,7 +27,7 @@ public class User {
 
     private List<String> roles = new ArrayList<>();
 
-    public User(UserRequest request){
+    public User(UserRequest request) {
         this.userName = request.getUserName().trim();
         this.password = request.getPassword().trim();
     }

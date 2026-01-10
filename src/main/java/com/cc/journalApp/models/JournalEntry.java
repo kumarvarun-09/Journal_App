@@ -11,16 +11,21 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Table(name = "journal_entry", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"user_id", "journal_number"})
+})
 public class JournalEntry {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
     @NonNull
     private String title;
     @Column(columnDefinition = "TEXT")
     private String content;
     private LocalDateTime timestamp;
+    @NonNull
+    private Long journalNumber;
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 

@@ -19,11 +19,11 @@ import java.util.List;
 public class JournalEntryController {
     private final IJournalService journalService;
 
-    @GetMapping("/{userName}")
-    public ResponseEntity<?> getAllJournalsOfUser(@PathVariable String userName) {
+    @GetMapping
+    public ResponseEntity<?> getAllJournalsOfUser() {
         try {
             List<JournalDTO> journalEntries = new ArrayList<>();
-            journalService.getAllJournalsForUser(userName)
+            journalService.getAllJournalsForUser()
                     .forEach(journal -> {
                         journalEntries.add(new JournalDTO(journal));
                     });
@@ -47,11 +47,11 @@ public class JournalEntryController {
         }
     }
 
-    @PostMapping("/{userName}")
-    public ResponseEntity<?> addJournalEntry(@PathVariable String userName, @RequestBody JournalRequest journalEntry) {
+    @PostMapping
+    public ResponseEntity<?> addJournalEntry(@RequestBody JournalRequest journalEntry) {
         try {
             JournalDTO insertedEntry = new JournalDTO(
-                    journalService.saveJournalEntry(userName, journalEntry));
+                    journalService.saveJournalEntry(journalEntry));
             return new ResponseEntity<>(insertedEntry, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);

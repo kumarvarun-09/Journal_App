@@ -7,6 +7,7 @@ import com.cc.journalApp.repository.JournalRepository;
 import com.cc.journalApp.request.JournalRequest;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -20,9 +21,9 @@ public class JournalService implements IJournalService {
     private final IUserService userService;
 
     @Override
-    public List<JournalEntry> getAllJournalsForUser(String userName) throws Exception {
+    public List<JournalEntry> getAllJournalsForUser() throws Exception {
         try {
-            userName = userName.trim();
+            String userName = SecurityContextHolder.getContext().getAuthentication().getName();
             User user = userService.getUserByUserName(userName);
             return journalRepository.findByUserId(user.getId());
         } catch (ResourceNotFoundException e) {
@@ -35,7 +36,10 @@ public class JournalService implements IJournalService {
     @Override
     public JournalEntry getJournalEntryById(Long id) throws Exception {
         try {
-            JournalEntry journalEntry = journalRepository.findById(id).orElse(null);
+            String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+            User user = userService.getUserByUserName(userName);
+            JournalEntry journalEntry = journalRepository.findByUserIdAndJournalNumber(user.getId(), id)
+                    .orElse(null);
             if (journalEntry != null) {
                 return journalEntry;
             }
@@ -49,11 +53,16 @@ public class JournalService implements IJournalService {
 
     @Override
     @Transactional
-    public JournalEntry saveJournalEntry(String userName, JournalRequest journalRequest) throws Exception {
+    public JournalEntry saveJournalEntry(JournalRequest journalRequest) throws Exception {
         try {
+            String userName = SecurityContextHolder.getContext().getAuthentication().getName();
             User user = userService.getUserByUserName(userName);
+            Long journalNumber = journalRepository.findTopByUserIdOrderByJournalNumberDesc(user.getId())
+                    .map(j -> (j.getJournalNumber() + 1))
+                    .orElse(1L);
             JournalEntry journalEntry = new JournalEntry(journalRequest);
             journalEntry.setUser(user);
+            journalEntry.setJournalNumber(journalNumber);
             journalEntry.setTimestamp(LocalDateTime.now());
             return journalRepository.save(journalEntry);
         } catch (ResourceNotFoundException e) {
@@ -67,8 +76,11 @@ public class JournalService implements IJournalService {
     @Transactional
     public JournalEntry updateJournalEntry(JournalEntry requestBody) throws Exception {
         try {
+            String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+            User user = userService.getUserByUserName(userName);
             Long id = requestBody.getId();
-            JournalEntry journalEntry = journalRepository.findById(id).orElse(null);
+            JournalEntry journalEntry = journalRepository.findByUserIdAndJournalNumber(user.getId(), id)
+                    .orElse(null);
             if (journalEntry != null) {
                 String title = requestBody.getTitle();
                 String content = requestBody.getContent();
@@ -93,7 +105,10 @@ public class JournalService implements IJournalService {
     @Transactional
     public void deleteJournalEntryById(Long id) {
         try {
-            JournalEntry journalEntry = journalRepository.findById(id).orElse(null);
+            String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+            User user = userService.getUserByUserName(userName);
+            JournalEntry journalEntry = journalRepository.findByUserIdAndJournalNumber(user.getId(), id)
+                    .orElse(null);
             if (journalEntry != null) {
                 journalRepository.deleteById(id);
             } else {
