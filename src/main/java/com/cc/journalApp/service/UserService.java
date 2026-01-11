@@ -88,6 +88,32 @@ public class UserService implements IUserService {
 
     @Override
     @Transactional
+    public User createAdminUser(UserRequest request) {
+        try {
+            if (request.getUserName() == null || request.getUserName().isEmpty()) {
+                throw new IllegalArgumentException("Parameter userName can not be empty");
+            } else if (request.getPassword() == null || request.getPassword().isEmpty()) {
+                throw new IllegalArgumentException("Parameter password can not be empty");
+            }
+            User user = userRepository.findByUserName(request.getUserName());
+            if (user != null) {
+                throw new UserNameAlreadyInUseException(user.getUserName());
+            }
+            User userToSave = new User(request);
+            userToSave.setPassword(bCryptPasswordEncoder.encode(request.getPassword()));
+            userToSave.setRoles(List.of("ADMIN", "USER"));
+            return userRepository.save(userToSave);
+        } catch (IllegalArgumentException e) {
+            throw e;
+        } catch (UserNameAlreadyInUseException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    @Transactional
     public User updateUser(UserRequest request) {
         try {
             if (request.getUserName() == null || request.getUserName().isEmpty()) {

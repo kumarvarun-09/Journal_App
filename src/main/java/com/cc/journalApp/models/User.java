@@ -22,7 +22,8 @@ public class User {
     private String userName;
     @NonNull
     private String password;
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL, orphanRemoval = true) // Warning: this will remove all journal entries for this user if user is deleted
     private List<JournalEntry> journalEntries;
 
     private List<String> roles = new ArrayList<>();

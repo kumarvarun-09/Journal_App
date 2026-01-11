@@ -14,6 +14,8 @@ public interface IUserService {
 
     User createUser(UserRequest user);
 
+    User createAdminUser(UserRequest request);
+
     User updateUser(UserRequest user);
 
     void deleteUser();
