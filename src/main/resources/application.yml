@@ -34,9 +34,9 @@
 # or we can make environment variables in ide configuration
 # spring.profiles.active=dev
 
-#spring:
-#  profiles:
-#    active: dev
+spring:
+  profiles:
+    active: prod
 
 # Now while creating the jar, we will have to give environment yml file name,
 # so that tests can run that environment
@@ -45,3 +45,12 @@
 # Now while running the jar file, we can give profile like this
 # java -jar .\journalApp-0.0.1-SNAPSHOT.jar --spring.profiles.active=dev
 # java -jar .\journalApp-0.0.1-SNAPSHOT.jar --spring.profiles.active=prod
+
+
+# we can set logging level from here
+
+logging:
+  level:
+    com:
+      cc:
+        journalApp: DEBUG

@@ -7,12 +7,14 @@ import com.cc.journalApp.repository.JournalRepository;
 import com.cc.journalApp.request.JournalRequest;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class JournalService implements IJournalService {
@@ -22,9 +24,12 @@ public class JournalService implements IJournalService {
 
     @Override
     public List<JournalEntry> getAllJournalsForUser() throws Exception {
+        final String METHOD_NAME = "getAllJournalsForUser";
         try {
             String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+            log.info("{}, userName = {}", METHOD_NAME, userName);
             User user = userService.getUserByUserName(userName);
+            log.debug("{}, Got user from DB {}", METHOD_NAME, user);
             return journalRepository.findByUserId(user.getId());
         } catch (ResourceNotFoundException e) {
             throw e;

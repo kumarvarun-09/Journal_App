@@ -35,3 +35,5 @@ build/
 # Ignore sensitive configs
 src/main/resources/application.properties
 src/main/resources/application.yml
+
+logs/

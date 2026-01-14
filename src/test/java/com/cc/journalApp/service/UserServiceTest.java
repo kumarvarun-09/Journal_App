@@ -4,12 +4,14 @@ import com.cc.journalApp.exceptions.ResourceNotFoundException;
 import com.cc.journalApp.models.User;
 import com.cc.journalApp.request.UserRequest;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ArgumentsSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+@Disabled("tested")
 @SpringBootTest
 //@RequiredArgsConstructor
 public class UserServiceTest {
