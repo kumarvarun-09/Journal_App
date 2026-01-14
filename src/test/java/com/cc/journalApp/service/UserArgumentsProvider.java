@@ -13,8 +13,8 @@ public class UserArgumentsProvider implements ArgumentsProvider {
     @Override
     public Stream<? extends Arguments> provideArguments(ExtensionContext context) throws Exception {
         return Stream.of(
-                Arguments.of(new UserRequest("abcd1", "abcd")),
-                Arguments.of(new UserRequest("xyz1", ""))
+                Arguments.of(new UserRequest("abcd17", "abcd")),
+                Arguments.of(new UserRequest("xyz15", "asdfhj"))
         );
     }
 }

@@ -1,26 +1,47 @@
-spring:
-  application:
-    name: Journal App
-  datasource:
-    url: jdbc:postgresql://localhost:5432/JournalApp
-    username: postgres
-    password: kumarV@08
-    driver-class-name: org.postgresql.Driver
+#spring:
+#  application:
+#    name: Journal App
+#  datasource:
+#    url: jdbc:postgresql://localhost:5432/JournalApp
+#    username: postgres
+#    password: kumarV@08
+#    driver-class-name: org.postgresql.Driver
+#
+#  jpa:
+#    hibernate:
+#      ddl-auto: update
+#    show-sql: true
+#    properties:
+#      hibernate:
+#        format_sql: true
+#    database-platform: org.hibernate.dialect.PostgreSQLDialect
+#
+#server:
+#  port: 8080
+#  servlet:
+#    context-path: /journal
+#
+#logging:
+#  level:
+#    org:
+#      springframework:
+#        security: DEBUG
 
-  jpa:
-    hibernate:
-      ddl-auto: update
-    show-sql: true
-    properties:
-      hibernate:
-        format_sql: true
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
+# NOTE : we can make separate application-dev.yml, stage, prod, etc. files for each environment separately
+# But if we are using this main application.yml ,
+# then we must mention the environment which we are going to use
+# we need to give environment name either .yml format in this file
+# or we can make environment variables in ide configuration
+# spring.profiles.active=dev
 
-server:
-  port: 8989
+#spring:
+#  profiles:
+#    active: dev
 
-logging:
-  level:
-    org:
-      springframework:
-        security: DEBUG
+# Now while creating the jar, we will have to give environment yml file name,
+# so that tests can run that environment
+# mvn package -D spring.profiles.active=dev
+
+# Now while running the jar file, we can give profile like this
+# java -jar .\journalApp-0.0.1-SNAPSHOT.jar --spring.profiles.active=dev
+# java -jar .\journalApp-0.0.1-SNAPSHOT.jar --spring.profiles.active=prod

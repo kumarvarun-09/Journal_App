@@ -4,6 +4,7 @@ import com.cc.journalApp.service.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
@@ -17,7 +18,8 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @RequiredArgsConstructor
-public class SpringSecurityConfig {
+@Profile("dev") // We can make separate config files for each environment
+public class SpringSecurityConfigDEV {
     //    🔑 Rule of Thumb
     //    In configuration classes, prefer injecting concrete beans, not interfaces
     private final UserDetailsServiceImpl userDetailsService;
@@ -25,9 +27,10 @@ public class SpringSecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.authorizeHttpRequests(authorize ->
-                        authorize.requestMatchers("/journals/**", "/users/**")
-                                .authenticated()
-                                .requestMatchers("/admin/**").hasRole("ADMIN")
+                        authorize
+//                                requestMatchers("/journals/**", "/users/**")
+//                                .authenticated()
+//                                .requestMatchers("/admin/**").hasRole("ADMIN")
                                 .anyRequest()
                                 .permitAll()).httpBasic(Customizer.withDefaults())
                 .sessionManagement(sessionManagement ->
