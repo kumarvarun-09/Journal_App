@@ -54,3 +54,7 @@ logging:
     com:
       cc:
         journalApp: DEBUG
+
+#sonar:
+#  host:
+#    url: http://localhost:9000
